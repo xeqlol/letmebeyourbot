@@ -238,7 +238,7 @@ namespace Letmebeyourbot
                     if (splittedMessage.Length == 1)
                         Client.SendMessage("Выберите противника для дуэли. Например, !duel jiberjaber1");
                     string result = client.DownloadString(@"https://tmi.twitch.tv/group/user/jiberjaber1/chatters");
-                    if (result.Contains($"\"{splittedMessage[1]}\""))
+                    if (result.Contains($"\"{splittedMessage[1].ToLower()}\""))
                         Client.SendMessage($"{arg.ChatMessage.Username} вызывает на дуэль {splittedMessage[1]}. {(new Random().Next(0, 1) >= 0.5 ? arg.ChatMessage.Username : splittedMessage[1])} выходит победителем!");
                     else
                         Client.SendMessage("Противник не в чате. Выберите кого-нибудь из чаттеров.");
