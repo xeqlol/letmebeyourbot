@@ -35,30 +35,30 @@ namespace Letmebeyourbot
         internal void SetCommandHandler()
         {
             // !commands
-            CommandList.Add(new Command("!commands", 
+            CommandList.Add(new Command("!commands",
                                         "Команда !commands показывает список доступных команд.",
                                         (arg) =>
             {
-                Client.SendMessage($"Список команд: {CommandList.Select(x => x.CommandName).Aggregate((a,b) => $"{a}, {b}")}");
+                Client.SendMessage($"{Memod()}Список команд: {CommandList.Select(x => x.CommandName).Aggregate((a, b) => $"{a}, {b}")}");
             }));
 
             // !commandinfo 
-            CommandList.Add(new Command("!commandinfo", 
+            CommandList.Add(new Command("!commandinfo",
                                         "Команда !commandinfo {command} показывает информацию о команде {command}. Например, !commandinfo !lalka.",
                                         (arg) =>
             {
                 string message = arg.ChatMessage.Message;
-                if(message.Split().Length == 1) { 
-                    Client.SendMessage("Пожалуйста, укажите название команды. Например, !commandinfo !lalka.");
+                if (message.Split().Length == 1) {
+                    Client.SendMessage($"{Memod()}Пожалуйста, укажите название команды. Например, !commandinfo !lalka.");
                     return;
                 }
                 Command info = CommandList.Find(x => x.CommandName == message.Split(' ')[1]);
                 if (info == null)
                 {
-                    Client.SendMessage($"Команда {message.Split(' ')[1]} не найдена. Возможно, Вы забыли знак ! перед названием команды. Например, !commandinfo !lalka.");
+                    Client.SendMessage($"{Memod()}Команда {message.Split(' ')[1]} не найдена. Возможно, Вы забыли знак ! перед названием команды. Например, !commandinfo !lalka.");
                     return;
                 }
-                Client.SendMessage(info.CommandInfo);
+                Client.SendMessage($"{Memod()}{info.CommandInfo}");
             }));
 
             // !followage
@@ -75,7 +75,7 @@ namespace Letmebeyourbot
                 }
                 if (username == LetmebeyourbotInfo.ChannelName || (arg.ChatMessage.DisplayName == LetmebeyourbotInfo.ChannelName && arg.ChatMessage.Message.Split(' ').Length == 1))
                 {
-                    Client.SendMessage($"{LetmebeyourbotInfo.ChannelName} владелец канала, ало. DansGame");
+                    Client.SendMessage($"{Memod()}{LetmebeyourbotInfo.ChannelName} владелец канала, ало. DansGame");
                     return;
                 }
                 using (WebClient client = new WebClient())
@@ -83,7 +83,7 @@ namespace Letmebeyourbot
                     string followstart = client.DownloadString($@"http://api.newtimenow.com/follow-length/?channel={LetmebeyourbotInfo.ChannelName}&user={username}");
                     if (followstart.StartsWith("Not following..."))
                     {
-                        Client.SendMessage($"{username} не подписан на канал.");
+                        Client.SendMessage($"{Memod()}{username} не подписан на канал.");
                         return;
                     }
                     DateTime date2 = DateTime.Now;
@@ -129,13 +129,13 @@ namespace Letmebeyourbot
                         difference.Seconds > 0 ? string.Format("{0:0}с", difference.Seconds.ToString()) : string.Empty);
                     if (string.IsNullOrEmpty(formatted))
                         formatted = "0 секунд";
-                    Client.SendMessage($"{username} с нами уже {formatted}.");
+                    Client.SendMessage($"{Memod()}{username} с нами уже {formatted}.");
                 }
             }));
 
             // !uptime
-            CommandList.Add(new Command("!uptime", 
-                                        "Команда !uptime показывает длительность текущей трансляции.", 
+            CommandList.Add(new Command("!uptime",
+                                        "Команда !uptime показывает длительность текущей трансляции.",
                                         (arg) =>
             {
                 string userId = null;
@@ -166,84 +166,109 @@ namespace Letmebeyourbot
 
                     if (string.IsNullOrEmpty(formatted)) formatted = "0с.";
 
-                    Client.SendMessage($"Длительность стрима: {formatted}.");
+                    Client.SendMessage($"{Memod()}Длительность стрима: {formatted}.");
                 }
                 else
                 {
-                    Client.SendMessage($"Стрим оффлайн.");
+                    Client.SendMessage($"{Memod()}Стрим оффлайн.");
                 }
             }));
 
             // !lalka
-            CommandList.Add(new Command("!lalka", 
-                                        "Команда !lalka {username} показывает насколько пользователь {username} лалка. Если {username} не указан, применяется к вызвавшему команду.", 
+            CommandList.Add(new Command("!lalka",
+                                        "Команда !lalka {username} показывает насколько пользователь {username} лалка. Если {username} не указан, применяется к вызвавшему команду.",
                                         (arg) =>
             {
-                if (arg == null) 
+                if (arg == null)
                     return;
                 if (arg.ChatMessage.Message.Split(' ').Length == 1)
                 {
-                    Client.SendMessage($"{arg.ChatMessage.Username} лалка на {new Random().Next(0, 100)}% Kappa");
+                    Client.SendMessage($"{Memod()}{arg.ChatMessage.Username} лалка на {new Random().Next(0, 100)}% Kappa");
                 }
                 else
                 {
                     string input = arg.ChatMessage.Message.Split(' ')[1];
                     if (input == LetmebeyourbotInfo.ChannelName || input == $"@{LetmebeyourbotInfo.ChannelName}")
                     {
-                        Client.SendMessage($"{LetmebeyourbotInfo.ChannelName} абсолютная лалка. 4Head");
+                        Client.SendMessage($"{Memod()}{LetmebeyourbotInfo.ChannelName} абсолютная лалка. 4Head");
                         return;
                     }
-                    Client.SendMessage($"{input} лалка на {new Random().Next(0, 100)}%. Kappa");
+                    Client.SendMessage($"{Memod()}{input} лалка на {new Random().Next(0, 100)}%. Kappa");
                 }
             }));
 
             // !vodka
-            CommandList.Add(new Command("!vodka", 
-                                        "VODKA, VODKA, VODKA! (phychonaut 4 - sweed decadence)", 
+            CommandList.Add(new Command("!vodka",
+                                        "VODKA, VODKA, VODKA! (phychonaut 4 - sweed decadence)",
                                         (arg) =>
             {
-                Client.SendMessage("VODKA, VODKA, VODKA! SwiftRage");
+                Client.SendMessage($"{Memod()}VODKA, VODKA, VODKA! SwiftRage");
             }));
 
             // !rating
-            CommandList.Add(new Command("!rating", 
-                                        "Команда !rating показывает текущий рейтинг на мейн персонаже.", 
+            CommandList.Add(new Command("!rating",
+                                        "Команда !rating показывает текущий рейтинг на мейн персонаже.",
                                         (arg) =>
             {
-                using(WebClient client = new WebClient())
+                using (WebClient client = new WebClient())
                 {
                     Newtonsoft.Json.Linq.JObject j_object = Newtonsoft.Json.Linq.JObject.Parse(client.DownloadString($"https://eu.api.battle.net/wow/character/BlackScar/Якушева?fields=pvp&locale=en_GB&apikey={LetmebeyourbotInfo.BlizzardAPIKey}"));
-                    Client.SendMessage($"Рейтинг на мейне (Якушева): 2x2 - {j_object["pvp"]["brackets"]["ARENA_BRACKET_2v2"]["rating"]}, " +
+                    Client.SendMessage($"{Memod()}Рейтинг на мейне (Якушева): 2x2 - {j_object["pvp"]["brackets"]["ARENA_BRACKET_2v2"]["rating"]}, " +
                                                                 $"3x3 - {j_object["pvp"]["brackets"]["ARENA_BRACKET_3v3"]["rating"]}, " +
                                                                 $"RBG - {j_object["pvp"]["brackets"]["ARENA_BRACKET_RBG"]["rating"]}.");
                 }
             }));
-            
+
             // !roll
-            CommandList.Add(new Command("!roll", 
-                                        "Команда !roll выбирает случайное число в промежутке от 1 до 100.", 
+            CommandList.Add(new Command("!roll",
+                                        "Команда !roll выбирает случайное число в промежутке от 1 до 100.",
                                         (arg) =>
             {
-                Client.SendMessage($"{arg.ChatMessage.Username} выбрасывает {new Random().Next(1, 100)} (1-100).");
+                Client.SendMessage($"{Memod()}{arg.ChatMessage.Username} выбрасывает {new Random().Next(1, 100)} (1-100).");
             }));
 
             // !duel
-            CommandList.Add(new Command("!duel", 
-                                        "Команда !duel вызывает {username} на дуэль.", 
+            CommandList.Add(new Command("!duel",
+                                        "Команда !duel вызывает {username} на дуэль.",
                                         (arg) =>
             {
                 using (WebClient client = new WebClient())
                 {
                     string[] splittedMessage = arg.ChatMessage.Message.Split(' ');
                     if (splittedMessage.Length == 1)
-                        Client.SendMessage("Выберите противника для дуэли. Например, !duel jiberjaber1");
+                        Client.SendMessage($"{Memod()}Выберите противника для дуэли. Например, !duel jiberjaber1");
                     string result = client.DownloadString(@"https://tmi.twitch.tv/group/user/jiberjaber1/chatters");
                     if (result.Contains($"\"{splittedMessage[1].ToLower()}\""))
-                        Client.SendMessage($"{arg.ChatMessage.Username} вызывает на дуэль {splittedMessage[1]}. {(new Random().Next(0, 1) >= 0.5 ? arg.ChatMessage.Username : splittedMessage[1])} выходит победителем!");
+                        Client.SendMessage($"{Memod()}{arg.ChatMessage.Username} вызывает на дуэль {splittedMessage[1]}. {(new Random().Next(0, 1) >= 0.5 ? arg.ChatMessage.Username : splittedMessage[1])} выходит победителем!");
                     else
-                        Client.SendMessage("Противник не в чате. Выберите кого-нибудь из чаттеров.");
+                        Client.SendMessage($"{Memod()}Противник не в чате. Выберите кого-нибудь из чаттеров.");
                 }
             }));
+
+            // !memod
+            CommandList.Add(new Command("!memod",
+                                        "Команда !memod {true/false} устанавливает режим отображения (/me) сообщений бота.",
+                                        (arg) =>
+            {
+                if (arg.ChatMessage.Username.ToLower() == "jiberjaber1" || arg.ChatMessage.Username.ToLower() == "xeqlol")
+                {
+                    if (bool.TryParse(arg.ChatMessage.Message.Split(' ')[1], out MeMod))
+                    {
+                        Client.SendMessage(Memod() + (MeMod ? "Режим /me включен." : "Режим /me отключен."));
+                    }
+                    else
+                    {
+                        Client.SendMessage($"{Memod()}Неправильный аргумент команды, попробуйте !memod true или !memod false");
+                    }
+                }
+                else
+                    return;
+            }));
+        }
+
+        private string Memod()
+        {
+            return MeMod ? "/me " : "";
         }
     }
 }

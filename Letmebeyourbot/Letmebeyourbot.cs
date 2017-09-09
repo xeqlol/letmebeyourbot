@@ -15,6 +15,9 @@ namespace Letmebeyourbot
         static MessageLimitHandler MLimitHandler;
         static TwitchLib.Models.API.v5.Channels.Channel Channel;
 
+        // if true, adds "/me" at the start of response
+        static bool MeMod = false;
+
         internal void Connect()
         {
             Console.WriteLine($"Letmebeyourbot v{System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()} by xeqlol\n");
