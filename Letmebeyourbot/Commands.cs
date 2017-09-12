@@ -239,7 +239,7 @@ namespace Letmebeyourbot
                         Client.SendMessage($"{Memod()}Выберите противника для дуэли. Например, !duel jiberjaber1");
                     string result = client.DownloadString(@"https://tmi.twitch.tv/group/user/jiberjaber1/chatters");
                     if (result.Contains($"\"{splittedMessage[1].ToLower()}\""))
-                        Client.SendMessage($"{Memod()}{arg.ChatMessage.Username} вызывает на дуэль {splittedMessage[1]}. {(new Random().Next(0, 1) >= 0.5 ? arg.ChatMessage.Username : splittedMessage[1])} выходит победителем!");
+                        Client.SendMessage($"{Memod()}{arg.ChatMessage.Username} вызывает на дуэль {splittedMessage[1]}. {(new Random().NextDouble() >= 0.5 ? arg.ChatMessage.Username : splittedMessage[1])} выходит победителем!");
                     else
                         Client.SendMessage($"{Memod()}Противник не в чате. Выберите кого-нибудь из чаттеров.");
                 }
