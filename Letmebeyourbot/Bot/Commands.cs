@@ -13,12 +13,14 @@ namespace Letmebeyourbot
         {
             public string CommandName;
             public string CommandInfo;
+            public Access CommandAccess;
             public Action<OnMessageReceivedArgs> CommandAction;
 
-            public Command(string name, string info, Action<OnMessageReceivedArgs> action)
+            public Command(string name, string info, Access access, Action<OnMessageReceivedArgs> action)
             {
                 CommandName = name;
                 CommandInfo = info;
+                CommandAccess = access;
                 CommandAction = action;
             }
 
@@ -37,6 +39,7 @@ namespace Letmebeyourbot
             // !commands
             CommandList.Add(new Command("!commands",
                                         "Команда !commands показывает список доступных команд.",
+                                        Access.User,
                                         (arg) =>
             {
                 Client.SendMessage($"{Memod()}Список команд: {CommandList.Select(x => x.CommandName).Aggregate((a, b) => $"{a}, {b}")}");
@@ -45,10 +48,12 @@ namespace Letmebeyourbot
             // !commandinfo 
             CommandList.Add(new Command("!commandinfo",
                                         "Команда !commandinfo {command} показывает информацию о команде {command}. Например, !commandinfo !lalka.",
+                                        Access.User,
                                         (arg) =>
             {
                 string message = arg.ChatMessage.Message;
-                if (message.Split().Length == 1) {
+                if (message.Split().Length == 1)
+                {
                     Client.SendMessage($"{Memod()}Пожалуйста, укажите название команды. Например, !commandinfo !lalka.");
                     return;
                 }
@@ -64,6 +69,7 @@ namespace Letmebeyourbot
             // !followage
             CommandList.Add(new Command("!followage",
                                         "Команда !followage {username} показывает сколько времени пользователь подписан на канал. Если {username} не указан, применяется к вызвавшему команду.",
+                                        Access.User,
                                         (arg) =>
             {
                 if (arg == null)
@@ -71,7 +77,7 @@ namespace Letmebeyourbot
                 string username = arg.ChatMessage.DisplayName;
                 if (arg.ChatMessage.Message.Split(' ').Length != 1)
                 {
-                    username = arg.ChatMessage.Message.Split(' ')[1];
+                    username = RemoveAtSymbol(arg.ChatMessage.Message.Split(' ')[1]);
                 }
                 if (username == LetmebeyourbotInfo.ChannelName || (arg.ChatMessage.DisplayName == LetmebeyourbotInfo.ChannelName && arg.ChatMessage.Message.Split(' ').Length == 1))
                 {
@@ -136,6 +142,7 @@ namespace Letmebeyourbot
             // !uptime
             CommandList.Add(new Command("!uptime",
                                         "Команда !uptime показывает длительность текущей трансляции.",
+                                        Access.User,
                                         (arg) =>
             {
                 string userId = null;
@@ -177,6 +184,7 @@ namespace Letmebeyourbot
             // !lalka
             CommandList.Add(new Command("!lalka",
                                         "Команда !lalka {username} показывает насколько пользователь {username} лалка. Если {username} не указан, применяется к вызвавшему команду.",
+                                        Access.User,
                                         (arg) =>
             {
                 if (arg == null)
@@ -187,7 +195,7 @@ namespace Letmebeyourbot
                 }
                 else
                 {
-                    string input = arg.ChatMessage.Message.Split(' ')[1];
+                    string input = RemoveAtSymbol(arg.ChatMessage.Message.Split(' ')[1]);
                     if (input == LetmebeyourbotInfo.ChannelName || input == $"@{LetmebeyourbotInfo.ChannelName}")
                     {
                         Client.SendMessage($"{Memod()}{LetmebeyourbotInfo.ChannelName} абсолютная лалка. 4Head");
@@ -200,6 +208,7 @@ namespace Letmebeyourbot
             // !vodka
             CommandList.Add(new Command("!vodka",
                                         "VODKA, VODKA, VODKA! (phychonaut 4 - sweed decadence)",
+                                        Access.User,
                                         (arg) =>
             {
                 Client.SendMessage($"{Memod()}VODKA, VODKA, VODKA! SwiftRage");
@@ -208,6 +217,7 @@ namespace Letmebeyourbot
             // !rating
             CommandList.Add(new Command("!rating",
                                         "Команда !rating показывает текущий рейтинг на мейн персонаже.",
+                                        Access.User,
                                         (arg) =>
             {
                 using (WebClient client = new WebClient())
@@ -222,6 +232,7 @@ namespace Letmebeyourbot
             // !roll
             CommandList.Add(new Command("!roll",
                                         "Команда !roll выбирает случайное число в промежутке от 1 до 100.",
+                                        Access.User,
                                         (arg) =>
             {
                 Client.SendMessage($"{Memod()}{arg.ChatMessage.Username} выбрасывает {new Random().Next(1, 100)} (1-100).");
@@ -230,6 +241,7 @@ namespace Letmebeyourbot
             // !duel
             CommandList.Add(new Command("!duel",
                                         "Команда !duel вызывает {username} на дуэль.",
+                                        Access.User,
                                         (arg) =>
             {
                 using (WebClient client = new WebClient())
@@ -237,38 +249,32 @@ namespace Letmebeyourbot
                     string[] splittedMessage = arg.ChatMessage.Message.Split(' ');
                     if (splittedMessage.Length == 1)
                         Client.SendMessage($"{Memod()}Выберите противника для дуэли. Например, !duel jiberjaber1");
-                    string result = client.DownloadString(@"https://tmi.twitch.tv/group/user/jiberjaber1/chatters");
-                    if (result.Contains($"\"{splittedMessage[1].ToLower()}\""))
-                        Client.SendMessage($"{Memod()}{arg.ChatMessage.Username} вызывает на дуэль {splittedMessage[1]}. {(new Random().NextDouble() >= 0.5 ? arg.ChatMessage.Username : splittedMessage[1])} выходит победителем!");
-                    else
-                        Client.SendMessage($"{Memod()}Противник не в чате. Выберите кого-нибудь из чаттеров.");
+
+                    Client.SendMessage($"{Memod()}{arg.ChatMessage.Username} вызывает на дуэль {RemoveAtSymbol(splittedMessage[1])}. {(new Random().NextDouble() >= 0.5 ? arg.ChatMessage.Username : RemoveAtSymbol(splittedMessage[1]))} выходит победителем!");
                 }
             }));
 
             // !memod
             CommandList.Add(new Command("!memod",
                                         "Команда !memod {true/false} устанавливает режим отображения (/me) сообщений бота.",
+                                        Access.Admin,
                                         (arg) =>
             {
-                if (arg.ChatMessage.Username.ToLower() == "jiberjaber1" || arg.ChatMessage.Username.ToLower() == "xeqlol")
+                if (bool.TryParse(arg.ChatMessage.Message.Split(' ')[1], out MeMod))
                 {
-                    if (bool.TryParse(arg.ChatMessage.Message.Split(' ')[1], out MeMod))
-                    {
-                        Client.SendMessage(Memod() + (MeMod ? "Режим /me включен." : "Режим /me отключен."));
-                    }
-                    else
-                    {
-                        Client.SendMessage($"{Memod()}Неправильный аргумент команды, попробуйте !memod true или !memod false");
-                    }
+                    Client.SendMessage(Memod() + (MeMod ? "Режим /me включен." : "Режим /me отключен."));
                 }
                 else
-                    return;
+                {
+                    Client.SendMessage($"{Memod()}Неправильный аргумент команды, попробуйте !memod true или !memod false");
+                }
+
             }));
         }
 
-        private string Memod()
-        {
-            return MeMod ? "/me " : "";
-        }
+
+        /* COINS COMMANDS */
+
+
     }
 }

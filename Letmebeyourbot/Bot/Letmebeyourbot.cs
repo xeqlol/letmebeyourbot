@@ -15,6 +15,8 @@ namespace Letmebeyourbot
         static MessageLimitHandler MLimitHandler;
         static TwitchLib.Models.API.v5.Channels.Channel Channel;
 
+        static string[] Admins = new string[] { LetmebeyourbotInfo.ChannelName, "xeqlol", "nonameorxeqlol" };
+
         // if true, adds "/me" at the start of response
         static bool MeMod = false;
 
@@ -69,8 +71,11 @@ namespace Letmebeyourbot
                     {
                         try
                         {
-                            command.CommandAction.Invoke(e);
-                            MLimitHandler.HandleMessageSent();
+                            if (command.CommandAccess <= AccessLevel(e))
+                            {
+                                command.CommandAction.Invoke(e);
+                                MLimitHandler.HandleMessageSent();
+                            }
                         }
                         catch (Exception ex)
                         {
