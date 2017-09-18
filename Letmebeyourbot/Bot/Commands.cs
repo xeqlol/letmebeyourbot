@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
-using IniParser;
-using IniParser.Model;
 using TwitchLib;
 using TwitchLib.Events.Client;
 using TwitchLib.Models.API.v5.Users;
@@ -44,7 +42,7 @@ namespace Letmebeyourbot
                                         Access.User,
                                         (arg) =>
             {
-                Client.SendMessage($"{Memod()}Список команд: {CommandList.FindAll(x => x.CommandAccess <= AccessLevel(arg)).Select(x => x.CommandName).Aggregate((a, b) => $"{a}, {b}")}");
+                Client.SendMessage($"{Memod()}Список команд: {CommandList.Select(x => x.CommandName).Aggregate((a, b) => $"{a}, {b}")}");
             }));
 
             // !commandinfo 
@@ -272,132 +270,11 @@ namespace Letmebeyourbot
                 }
 
             }));
-
-            /* COINS COMMANDS */
-
-            // TODO: refactor these tons of code with entity framework
-
-            // !coins
-            CommandList.Add(new Command("!coins",
-                                        "Команда !coins отображает ваш текущий баланс коинов.",
-                                        Access.User,
-                                        (arg) =>
-            {
-                DBConnection = (new FileIniDataParser()).ReadFile("database.ini");
-
-                if (DBConnection.Sections.GetSectionData(arg.ChatMessage.Username) != null)
-                {
-                    if(DBConnection.Sections.GetSectionData(arg.ChatMessage.Username).Keys.GetKeyData("Coins") != null)
-                        Client.SendMessage($"{Memod()}{arg.ChatMessage.Username}, на вашем балансе {DBConnection[arg.ChatMessage.Username]["Coins"]} коинов.");
-                }
-                else
-                {
-                    DBConnection.Sections.AddSection(arg.ChatMessage.Username);
-                    DBConnection[arg.ChatMessage.Username].AddKey("Coins", 0.ToString());
-                    (new FileIniDataParser()).WriteFile("database.ini", DBConnection);
-                    Client.SendMessage($"{Memod()}{arg.ChatMessage.Username}, на вашем балансе {DBConnection[arg.ChatMessage.Username]["Coins"]} коинов.");
-                }
-            }));
-
-            // !usercoins
-            CommandList.Add(new Command("!usercoins",
-                                        "Команда !usercoins {username} отображает текущий баланс коинов пользователя {username}.",
-                                        Access.Admin,
-                                        (arg) =>
-            {
-                if (arg.ChatMessage.Message.Split(' ').Length < 2)
-                {
-                    Client.SendMessage($"{Memod()}{arg.ChatMessage.Username}, некорректный ввод команды. Попробуйте, например, !usercoins jiberjaber1");
-                    return;
-                }
-
-                string username = RemoveAtSymbol(arg.ChatMessage.Message.Split(' ')[1]);
-                DBConnection = (new FileIniDataParser()).ReadFile("database.ini");
-
-                if (DBConnection.Sections.GetSectionData(username) != null)
-                {
-                    if (DBConnection.Sections.GetSectionData(username).Keys.GetKeyData("Coins") != null)
-                        Client.SendMessage($"{Memod()}{arg.ChatMessage.Username}, на балансе {username} {DBConnection.Sections.GetSectionData(username).Keys.GetKeyData("Coins").Value} коинов.");
-                }
-                else
-                {
-                    DBConnection.Sections.AddSection(username);
-                    DBConnection[username].AddKey("Coins", 0.ToString());
-                    (new FileIniDataParser()).WriteFile("database.ini", DBConnection);
-                    Client.SendMessage($"{Memod()}{arg.ChatMessage.Username}, на балансе {username} {DBConnection.Sections.GetSectionData(username).Keys.GetKeyData("Coins").Value} коинов.");
-                }
-            }));
-
-            // !addcoins
-            CommandList.Add(new Command("!addcoins",
-                                        "Команда !addcoins {username} {count} добавляет пользователю {username} коины в количестве {count}.",
-                                        Access.Admin,
-                                        (arg) =>
-            {
-                if (arg.ChatMessage.Message.Split(' ').Length < 3)
-                {
-                    Client.SendMessage($"{Memod()}Ошибка при вводе команды. Попробуйте, например, !addcoins jiberjaber1 100");
-                    return;
-                }
-                
-                string username = RemoveAtSymbol(arg.ChatMessage.Message.Split(' ')[1]);
-                int coins = int.Parse(arg.ChatMessage.Message.Split(' ')[2]);
-
-                DBConnection = (new FileIniDataParser()).ReadFile("database.ini");
-
-                if (DBConnection.Sections.GetSectionData(username) != null)
-                {
-                    if (DBConnection.Sections.GetSectionData(username).Keys.GetKeyData("Coins") != null)
-                    {
-                        DBConnection[username]["Coins"] = (int.Parse(DBConnection[username]["Coins"]) + coins).ToString();
-                        (new FileIniDataParser()).WriteFile("database.ini", DBConnection);
-                        Client.SendMessage($"{Memod()}{arg.ChatMessage.Username}, на баланс {username} начислено {coins} коинов (текущий баланс {DBConnection[username]["Coins"]}).");
-                    }
-                }
-                else
-                {
-                    DBConnection.Sections.AddSection(username);
-                    DBConnection[username].AddKey("Coins", coins.ToString());
-                    (new FileIniDataParser()).WriteFile("database.ini", DBConnection);
-                    Client.SendMessage($"{Memod()}{arg.ChatMessage.Username}, на баланс {username} начислено {coins} коинов (текущий баланс {DBConnection[username]["Coins"]}).");
-                }
-
-            }));
-
-            // !removecoins
-            CommandList.Add(new Command("!removecoins",
-                                        "Команда !removecoins {username} {count} вычитает пользователю {username} коины в количестве {count}.",
-                                        Access.Admin,
-                                        (arg) =>
-            {
-                if (arg.ChatMessage.Message.Split(' ').Length < 3)
-                {
-                    Client.SendMessage($"{Memod()}Ошибка при вводе команды. Попробуйте, например, !removecoins jiberjaber1 100");
-                    return;
-                }
-                
-                string username = RemoveAtSymbol(arg.ChatMessage.Message.Split(' ')[1]);
-                int coins = int.Parse(arg.ChatMessage.Message.Split(' ')[2]);
-
-                DBConnection = (new FileIniDataParser()).ReadFile("database.ini");
-
-                if (DBConnection.Sections.GetSectionData(username) != null)
-                {
-                    if (DBConnection.Sections.GetSectionData(username).Keys.GetKeyData("Coins") != null)
-                    {
-                        DBConnection[username]["Coins"] = (int.Parse(DBConnection[username]["Coins"]) - coins >= 0 ? int.Parse(DBConnection[username]["Coins"]) - coins : 0).ToString();
-                        (new FileIniDataParser()).WriteFile("database.ini", DBConnection);
-                        Client.SendMessage($"{Memod()}{arg.ChatMessage.Username}, из баланса {username} вычтено {coins} коинов (текущий баланс {DBConnection[username]["Coins"]}).");
-                    }
-                }
-                else
-                {
-                    DBConnection.Sections.AddSection(username);
-                    DBConnection[username].AddKey("Coins", coins.ToString());
-                    (new FileIniDataParser()).WriteFile("database.ini", DBConnection);
-                    Client.SendMessage($"{Memod()}{arg.ChatMessage.Username}, из баланса {username} вычтено {coins} коинов (текущий баланс {(int.Parse(DBConnection[username]["Coins"]) - coins >= 0 ? int.Parse(DBConnection[username]["Coins"]) - coins : 0)}).");
-                }
-            }));
         }
+
+
+        /* COINS COMMANDS */
+
+
     }
 }

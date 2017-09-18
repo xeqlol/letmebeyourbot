@@ -118,18 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BlizzardAPIKey" xml:space="preserve">
-    <value>j5cypezhkmb72ytmkye3nszx5rj3wrr7</value>
+    <value> </value>
   </data>
   <data name="BotToken" xml:space="preserve">
-    <value>9zobdm74l5mlm9x2z92t3bdfbt0y6u</value>
+    <value> </value>
   </data>
   <data name="BotUsername" xml:space="preserve">
-    <value>jiberjaber1</value>
+    <value> </value>
   </data>
   <data name="ChannelName" xml:space="preserve">
-    <value>jiberjaber1</value>
+    <value> </value>
   </data>
   <data name="ClientId" xml:space="preserve">
-    <value>sommyx3gxczzuu4nb13ica04rocob5</value>
+    <value> </value>
   </data>
 </root>

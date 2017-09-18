@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using IniParser;
-using IniParser.Model;
 using TwitchLib;
 using TwitchLib.Events.Client;
 using TwitchLib.Models.Client;
@@ -16,7 +14,6 @@ namespace Letmebeyourbot
         static List<Command> CommandList = new List<Command>();
         static MessageLimitHandler MLimitHandler;
         static TwitchLib.Models.API.v5.Channels.Channel Channel;
-        static IniData DBConnection;
 
         static string[] Admins = new string[] { LetmebeyourbotInfo.ChannelName, "xeqlol", "nonameorxeqlol" };
 
@@ -31,7 +28,7 @@ namespace Letmebeyourbot
             TwitchAPI.Settings.ClientId = LetmebeyourbotInfo.ClientId;
 
             Credentials = new ConnectionCredentials(LetmebeyourbotInfo.BotUsername, LetmebeyourbotInfo.BotToken);
-            Client = new TwitchClient(Credentials, LetmebeyourbotInfo.ChannelName, logging: true);
+            Client = new TwitchClient(Credentials, LetmebeyourbotInfo.ChannelName, logging: false);
             MLimitHandler = new MessageLimitHandler();
             Channel = TwitchAPI.Channels.v5.GetChannelByIDAsync(TwitchAPI.Users.v5.GetUserByNameAsync(LetmebeyourbotInfo.ChannelName).Result.Matches[0].Id).Result;
 
@@ -82,7 +79,7 @@ namespace Letmebeyourbot
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"Exception: {ex}");
+                            Console.WriteLine($"Exception: {ex.Message}");
                         }
                     }
                     else
@@ -95,7 +92,7 @@ namespace Letmebeyourbot
 
         internal void Client_OnLog(object sender, OnLogArgs e)
         {
-            //Console.WriteLine(e.Data);
+            Console.WriteLine(e.Data);
         }
 
         internal void Client_OnConnectionError(object sender, OnConnectionErrorArgs e)
