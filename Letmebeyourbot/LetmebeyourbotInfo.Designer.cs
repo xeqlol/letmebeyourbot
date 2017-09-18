@@ -61,7 +61,7 @@ namespace Letmebeyourbot {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  .
+        ///   Looks up a localized string similar to j5cypezhkmb72ytmkye3nszx5rj3wrr7.
         /// </summary>
         internal static string BlizzardAPIKey {
             get {
@@ -70,7 +70,7 @@ namespace Letmebeyourbot {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  .
+        ///   Looks up a localized string similar to 9zobdm74l5mlm9x2z92t3bdfbt0y6u.
         /// </summary>
         internal static string BotToken {
             get {
@@ -79,7 +79,7 @@ namespace Letmebeyourbot {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  .
+        ///   Looks up a localized string similar to jiberjaber1.
         /// </summary>
         internal static string BotUsername {
             get {
@@ -88,7 +88,7 @@ namespace Letmebeyourbot {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  .
+        ///   Looks up a localized string similar to jiberjaber1.
         /// </summary>
         internal static string ChannelName {
             get {
@@ -97,7 +97,7 @@ namespace Letmebeyourbot {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  .
+        ///   Looks up a localized string similar to sommyx3gxczzuu4nb13ica04rocob5.
         /// </summary>
         internal static string ClientId {
             get {
