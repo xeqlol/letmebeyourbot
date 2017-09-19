@@ -275,7 +275,7 @@ namespace Letmebeyourbot
 
             /* COINS COMMANDS */
 
-            // TODO: refactor these tons of code with entity framework
+            // TODO: refactor 
 
             // !coins
             CommandList.Add(new Command("!coins",
