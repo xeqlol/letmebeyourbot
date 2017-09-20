@@ -6,6 +6,7 @@ using IniParser.Model;
 using TwitchLib;
 using TwitchLib.Events.Client;
 using TwitchLib.Models.Client;
+using System.Reflection;
 
 namespace Letmebeyourbot
 {
