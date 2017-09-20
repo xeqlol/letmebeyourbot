@@ -42,13 +42,13 @@ namespace Letmebeyourbot
     }
 
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
-    public class Command : Attribute
+    public class CommandAttribute : Attribute
     {
-        public string[] CommandString { get; }
+        public string CommandString { get; }
         public string CommandInfo { get; }
         public Letmebeyourbot.Access CommandAccess { get; }
 
-        public Command(string[] commandString, string commandInfo, Letmebeyourbot.Access commandAccess)
+        public CommandAttribute(string commandString, string commandInfo, Letmebeyourbot.Access commandAccess)
         {
             CommandString = commandString;
             CommandInfo = commandInfo;

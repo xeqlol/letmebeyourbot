@@ -34,6 +34,17 @@ namespace Letmebeyourbot
             }
         }
 
+        // preparation for reflection refactoring
+
+        [Command("!commands",
+                "Команда !commands показывает список доступных команд.",
+                Access.User)]
+        public void Commands(OnMessageReceivedArgs e)
+        {
+
+        }
+
+
         // TODO: add some commands descriptions
 
         internal void SetCommandHandler()

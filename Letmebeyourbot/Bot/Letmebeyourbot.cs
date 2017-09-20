@@ -67,6 +67,8 @@ namespace Letmebeyourbot
         {
             if (e.ChatMessage.Message.StartsWith("!"))
             {
+                // reflection => find all functions that have Command attribute, then use attribute.CommandName
+
                 Command command = CommandList.Find(x => x.CommandName == e.ChatMessage.Message.Split().First());
                 if (command != null) // no, we cannot join these ifs
                 {
