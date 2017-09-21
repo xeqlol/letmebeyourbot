@@ -34,17 +34,6 @@ namespace Letmebeyourbot
             }
         }
 
-        // preparation for reflection refactoring
-
-        [Command("!commands",
-                "Команда !commands показывает список доступных команд.",
-                Access.User)]
-        public void Commands(OnMessageReceivedArgs e)
-        {
-
-        }
-
-
         // TODO: add some commands descriptions
 
         internal void SetCommandHandler()
@@ -286,7 +275,7 @@ namespace Letmebeyourbot
 
             /* COINS COMMANDS */
 
-            // TODO: refactor 
+            // TODO: refactor
 
             // !coins
             CommandList.Add(new Command("!coins",
@@ -294,7 +283,7 @@ namespace Letmebeyourbot
                                         Access.User,
                                         (arg) =>
             {
-                DBConnection = (new FileIniDataParser()).ReadFile("database.ini");
+                DBConnection = (new FileIniDataParser()).ReadFile(LetmebeyourbotInfo.DatabaseIni);
 
                 if (DBConnection.Sections.GetSectionData(arg.ChatMessage.Username) != null)
                 {
@@ -305,7 +294,7 @@ namespace Letmebeyourbot
                 {
                     DBConnection.Sections.AddSection(arg.ChatMessage.Username);
                     DBConnection[arg.ChatMessage.Username].AddKey("Coins", 0.ToString());
-                    (new FileIniDataParser()).WriteFile("database.ini", DBConnection);
+                    (new FileIniDataParser()).WriteFile(LetmebeyourbotInfo.DatabaseIni, DBConnection);
                     Client.SendMessage($"{Memod()}{arg.ChatMessage.Username}, на вашем балансе {DBConnection[arg.ChatMessage.Username]["Coins"]} коинов.");
                 }
             }));
@@ -323,7 +312,7 @@ namespace Letmebeyourbot
                 }
 
                 string username = RemoveAtSymbol(arg.ChatMessage.Message.Split(' ')[1]);
-                DBConnection = (new FileIniDataParser()).ReadFile("database.ini");
+                DBConnection = (new FileIniDataParser()).ReadFile(LetmebeyourbotInfo.DatabaseIni);
 
                 if (DBConnection.Sections.GetSectionData(username) != null)
                 {
@@ -334,7 +323,7 @@ namespace Letmebeyourbot
                 {
                     DBConnection.Sections.AddSection(username);
                     DBConnection[username].AddKey("Coins", 0.ToString());
-                    (new FileIniDataParser()).WriteFile("database.ini", DBConnection);
+                    (new FileIniDataParser()).WriteFile(LetmebeyourbotInfo.DatabaseIni, DBConnection);
                     Client.SendMessage($"{Memod()}{arg.ChatMessage.Username}, на балансе {username} {DBConnection.Sections.GetSectionData(username).Keys.GetKeyData("Coins").Value} коинов.");
                 }
             }));
@@ -354,14 +343,14 @@ namespace Letmebeyourbot
                 string username = RemoveAtSymbol(arg.ChatMessage.Message.Split(' ')[1]);
                 int coins = int.Parse(arg.ChatMessage.Message.Split(' ')[2]);
 
-                DBConnection = (new FileIniDataParser()).ReadFile("database.ini");
+                DBConnection = (new FileIniDataParser()).ReadFile(LetmebeyourbotInfo.DatabaseIni);
 
                 if (DBConnection.Sections.GetSectionData(username) != null)
                 {
                     if (DBConnection.Sections.GetSectionData(username).Keys.GetKeyData("Coins") != null)
                     {
                         DBConnection[username]["Coins"] = (int.Parse(DBConnection[username]["Coins"]) + coins).ToString();
-                        (new FileIniDataParser()).WriteFile("database.ini", DBConnection);
+                        (new FileIniDataParser()).WriteFile(LetmebeyourbotInfo.DatabaseIni, DBConnection);
                         Client.SendMessage($"{Memod()}{arg.ChatMessage.Username}, на баланс {username} начислено {coins} коинов (текущий баланс {DBConnection[username]["Coins"]}).");
                     }
                 }
@@ -369,7 +358,7 @@ namespace Letmebeyourbot
                 {
                     DBConnection.Sections.AddSection(username);
                     DBConnection[username].AddKey("Coins", coins.ToString());
-                    (new FileIniDataParser()).WriteFile("database.ini", DBConnection);
+                    (new FileIniDataParser()).WriteFile(LetmebeyourbotInfo.DatabaseIni, DBConnection);
                     Client.SendMessage($"{Memod()}{arg.ChatMessage.Username}, на баланс {username} начислено {coins} коинов (текущий баланс {DBConnection[username]["Coins"]}).");
                 }
 
@@ -390,14 +379,14 @@ namespace Letmebeyourbot
                 string username = RemoveAtSymbol(arg.ChatMessage.Message.Split(' ')[1]);
                 int coins = int.Parse(arg.ChatMessage.Message.Split(' ')[2]);
 
-                DBConnection = (new FileIniDataParser()).ReadFile("database.ini");
+                DBConnection = (new FileIniDataParser()).ReadFile(LetmebeyourbotInfo.DatabaseIni);
 
                 if (DBConnection.Sections.GetSectionData(username) != null)
                 {
                     if (DBConnection.Sections.GetSectionData(username).Keys.GetKeyData("Coins") != null)
                     {
                         DBConnection[username]["Coins"] = (int.Parse(DBConnection[username]["Coins"]) - coins >= 0 ? int.Parse(DBConnection[username]["Coins"]) - coins : 0).ToString();
-                        (new FileIniDataParser()).WriteFile("database.ini", DBConnection);
+                        (new FileIniDataParser()).WriteFile(LetmebeyourbotInfo.DatabaseIni, DBConnection);
                         Client.SendMessage($"{Memod()}{arg.ChatMessage.Username}, из баланса {username} вычтено {coins} коинов (текущий баланс {DBConnection[username]["Coins"]}).");
                     }
                 }
@@ -405,7 +394,7 @@ namespace Letmebeyourbot
                 {
                     DBConnection.Sections.AddSection(username);
                     DBConnection[username].AddKey("Coins", coins.ToString());
-                    (new FileIniDataParser()).WriteFile("database.ini", DBConnection);
+                    (new FileIniDataParser()).WriteFile(LetmebeyourbotInfo.DatabaseIni, DBConnection);
                     Client.SendMessage($"{Memod()}{arg.ChatMessage.Username}, из баланса {username} вычтено {coins} коинов (текущий баланс {(int.Parse(DBConnection[username]["Coins"]) - coins >= 0 ? int.Parse(DBConnection[username]["Coins"]) - coins : 0)}).");
                 }
             }));

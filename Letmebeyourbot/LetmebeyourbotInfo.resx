@@ -132,4 +132,7 @@
   <data name="ClientId" xml:space="preserve">
     <value> </value>
   </data>
+  <data name="DatabaseIni" xml:space="preserve">
+    <value> </value>
+  </data>
 </root>

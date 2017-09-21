@@ -23,7 +23,7 @@ namespace Letmebeyourbot
 
         private string RemoveAtSymbol(string username)
         {
-            return username.StartsWith("@") ? username.Replace("@", "") : username;
+            return username.StartsWith("@") ? username.Replace("@", "").ToLower() : username.ToLower();
         }
 
         private Access AccessLevel(OnMessageReceivedArgs evnt)
@@ -39,20 +39,5 @@ namespace Letmebeyourbot
                 return Access.User;
             }
         } 
-    }
-
-    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
-    public class CommandAttribute : Attribute
-    {
-        public string CommandString { get; }
-        public string CommandInfo { get; }
-        public Letmebeyourbot.Access CommandAccess { get; }
-
-        public CommandAttribute(string commandString, string commandInfo, Letmebeyourbot.Access commandAccess)
-        {
-            CommandString = commandString;
-            CommandInfo = commandInfo;
-            CommandAccess = commandAccess;
-        }
     }
 }

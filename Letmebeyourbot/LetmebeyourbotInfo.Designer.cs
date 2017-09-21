@@ -104,5 +104,14 @@ namespace Letmebeyourbot {
                 return ResourceManager.GetString("ClientId", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  .
+        /// </summary>
+        internal static string DatabaseIni {
+            get {
+                return ResourceManager.GetString("DatabaseIni", resourceCulture);
+            }
+        }
     }
 }

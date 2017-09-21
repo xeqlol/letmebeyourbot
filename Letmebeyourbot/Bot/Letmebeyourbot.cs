@@ -6,7 +6,8 @@ using IniParser.Model;
 using TwitchLib;
 using TwitchLib.Events.Client;
 using TwitchLib.Models.Client;
-using System.Reflection;
+using System.Timers;
+using TwitchLib.Models.API.v5.Users;
 
 namespace Letmebeyourbot
 {
@@ -18,6 +19,7 @@ namespace Letmebeyourbot
         static MessageLimitHandler MLimitHandler;
         static TwitchLib.Models.API.v5.Channels.Channel Channel;
         static IniData DBConnection;
+        static Timer CoinTimer;
 
         static string[] Admins = new string[] { LetmebeyourbotInfo.ChannelName, "xeqlol", "nonameorxeqlol" };
 
@@ -35,6 +37,11 @@ namespace Letmebeyourbot
             Client = new TwitchClient(Credentials, LetmebeyourbotInfo.ChannelName, logging: true);
             MLimitHandler = new MessageLimitHandler();
             Channel = TwitchAPI.Channels.v5.GetChannelByIDAsync(TwitchAPI.Users.v5.GetUserByNameAsync(LetmebeyourbotInfo.ChannelName).Result.Matches[0].Id).Result;
+
+            // configure coin timer
+            CoinTimer = new Timer(1000*60*5);
+            CoinTimer.Elapsed += AddCoinsToChatters;
+            CoinTimer.AutoReset = true;
 
             Client.OnLog += Client_OnLog;
             Client.OnConnectionError += Client_OnConnectionError;
@@ -57,6 +64,9 @@ namespace Letmebeyourbot
             Console.WriteLine(!TwitchAPI.Streams.v5.BroadcasterOnlineAsync(Channel.Id.ToString()).Result
                 ? "Status: offline"
                 : $"Status: \tonline\nTitle: \t\t{Channel.Status}\nGame: \t\t{Channel.Game}\nUptimet: \t{TwitchAPI.Streams.v5.GetUptimeAsync(Channel.Id.ToString()).Result}");
+
+
+            CoinTimer.Start();
         }
 
         internal void Disconnect()
@@ -104,6 +114,50 @@ namespace Letmebeyourbot
         internal void Client_OnConnectionError(object sender, OnConnectionErrorArgs e)
         {
             Console.WriteLine($"Error: {e.Error}");
+        }
+
+        internal void AddCoinsToChatters(Object source, ElapsedEventArgs args)
+        {
+            var chatters = TwitchAPI.Undocumented.GetChattersAsync(LetmebeyourbotInfo.ChannelName).Result;
+
+            string userId = null;
+            try
+            {
+                User[] userList = TwitchAPI.Users.v5.GetUserByNameAsync(LetmebeyourbotInfo.ChannelName).Result.Matches;
+                if (userList.Length == 0 || userList == null)
+                    return;
+                userId = userList[0].Id;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+            if (userId == null)
+                return;
+            TimeSpan? time = TwitchAPI.Streams.v5.GetUptimeAsync(userId).Result;
+            if (time != null)
+            {
+                DBConnection = (new FileIniDataParser()).ReadFile(LetmebeyourbotInfo.DatabaseIni);
+                foreach (var chatter in chatters)
+                {
+                    int coins = 1;
+                    string username = chatter.Username;
+
+                    if (DBConnection.Sections.GetSectionData(username) != null)
+                    {
+                        if (DBConnection.Sections.GetSectionData(username).Keys.GetKeyData("Coins") != null)
+                        {
+                            DBConnection[username]["Coins"] = (int.Parse(DBConnection[username]["Coins"]) + coins).ToString();
+                        }
+                    }
+                    else
+                    {
+                        DBConnection.Sections.AddSection(username);
+                        DBConnection[username].AddKey("Coins", coins.ToString());
+                    }
+                }
+                (new FileIniDataParser()).WriteFile(LetmebeyourbotInfo.DatabaseIni, DBConnection);
+            }
         }
     }
 
