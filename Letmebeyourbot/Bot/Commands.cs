@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Net;
 using IniParser;
-using IniParser.Model;
 using TwitchLib;
 using TwitchLib.Events.Client;
 using TwitchLib.Models.API.v5.Users;
@@ -33,8 +32,6 @@ namespace Letmebeyourbot
                 return false;
             }
         }
-
-        // TODO: add some commands descriptions
 
         internal void SetCommandHandler()
         {

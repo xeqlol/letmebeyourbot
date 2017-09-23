@@ -43,7 +43,6 @@ namespace Letmebeyourbot
             CoinTimer.Elapsed += AddCoinsToChatters;
             CoinTimer.AutoReset = true;
 
-            Client.OnLog += Client_OnLog;
             Client.OnConnectionError += Client_OnConnectionError;
             Client.OnMessageReceived += Client_OnMessageReceived;
 
@@ -55,7 +54,6 @@ namespace Letmebeyourbot
             }
             catch (Exception ex)
             {
-                // TODO: add here something with "reconnect in blablabla sec."
                 Console.WriteLine($"Something goes wrong: {ex.Message}");
                 return;
             }
@@ -78,10 +76,8 @@ namespace Letmebeyourbot
         {
             if (e.ChatMessage.Message.StartsWith("!"))
             {
-                // reflection => find all functions that have Command attribute, then use attribute.CommandName
-
                 Command command = CommandList.Find(x => x.CommandName == e.ChatMessage.Message.Split().First());
-                if (command != null) // no, we cannot join these ifs
+                if (command != null)
                 {
                     if (MLimitHandler.ShouldSendMessage() > 0)
                     {
@@ -104,11 +100,6 @@ namespace Letmebeyourbot
                     }
                 }
             }
-        }
-
-        internal void Client_OnLog(object sender, OnLogArgs e)
-        {
-            //Console.WriteLine(e.Data);
         }
 
         internal void Client_OnConnectionError(object sender, OnConnectionErrorArgs e)
