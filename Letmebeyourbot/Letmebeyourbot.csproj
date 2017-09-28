@@ -79,6 +79,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bot new\BotCommandAttribute.cs" />
     <Compile Include="Bot new\MessageLimiter.cs" />
     <Compile Include="Bot\Commands.cs" />
     <Compile Include="LetmebeyourbotInfo.Designer.cs">
