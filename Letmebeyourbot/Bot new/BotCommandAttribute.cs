@@ -6,6 +6,13 @@ using System.Threading.Tasks;
 
 namespace Letmebeyourbot.Bot_new
 {
+    public enum AccessLevel
+    {
+        Admin = 2,
+        Moderator = 1,
+        User = 0
+    }
+
     [AttributeUsage(AttributeTargets.Method)]
     public class BotCommandAttribute : Attribute
     {
