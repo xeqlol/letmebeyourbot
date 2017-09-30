@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Letmebeyourbot.Bot_new
+namespace Letmebeyourbot.Bot2
 {
     internal class MessageLimiter
     {
